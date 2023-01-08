@@ -1,0 +1,10 @@
+export const BG_COLOR = "#FFBEA7";
+export const CANVAS_WIDTH = 1200;
+export const CANVAS_HEIGHT = 800;
+export const MAX_ACCELERATION = 5;
+export const MAX_FORCE = 0.1;
+export const MAX_VELOCITY = 5;
+export const OBJECT_WIDTH = 38;
+export const OBJECT_HEIGHT = 44;
+export const RESTITUTION = 0.9;
+export const MAX_VECTOR_LENGTH = 10;

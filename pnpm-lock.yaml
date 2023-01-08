@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@types/p5': ^1.4.3
   p5: ^1.5.0
   typescript: ^4.9.3
   vite: ^4.0.0
@@ -9,6 +10,7 @@ dependencies:
   p5: 1.5.0
 
 devDependencies:
+  '@types/p5': 1.4.3
   typescript: 4.9.4
   vite: 4.0.4
 
@@ -211,6 +213,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@types/p5/1.4.3:
+    resolution: {integrity: sha512-UjgBi1/VU0Dz1/JxzRZrDKlC54rMELWW+6oHx1pRKzKkVgwzvP+dEjZ1JbeMjK12VJMUjDx4lhGUmnUL2jBASQ==}
+    dev: true
 
   /esbuild/0.16.13:
     resolution: {integrity: sha512-oYwFdSEIoKM1oYzyem1osgKJAvg5447XF+05ava21fOtilyb2HeQQh26/74K4WeAk5dZmj/Mx10zUqUnI14jhA==}
