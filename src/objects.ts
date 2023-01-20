@@ -1,4 +1,5 @@
 import P5, { Color, Image, Vector } from "p5";
+import { Point, QuadTree } from "./CustomQuadTree";
 import {
   CANVAS_HEIGHT,
   CANVAS_WIDTH,
@@ -46,7 +47,7 @@ export class AbstractObject {
     this.acceleration =
       acceleration == undefined ? new Vector(0, 0, 0) : acceleration;
   }
-  getObjectsToMoveTowards(): RealObject[] {
+  getObjectsToMoveTowards(): QuadTree<RealObject> {
     switch (this.objectType) {
       case "rock":
         return this.stage.scissors;
@@ -66,19 +67,13 @@ export class AbstractObject {
         return this.stage.scissorImage;
     }
   }
-  getNearest(objects: RealObject[]): RealObject | null {
-    let nearest = null;
-    let minDistance = Infinity;
-    for (let i = 0; i < objects.length; i++) {
-      const objectCentre = new Vector(objects[i].centre.x, objects[i].centre.y);
-      const thisCentre = new Vector(this.centre.x, this.centre.y);
-      const distance = thisCentre.dist(objectCentre);
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearest = objects[i];
-      }
-    }
-    return nearest;
+  getNearest(qt: QuadTree<RealObject>): Point<RealObject> | null {
+    return qt.findClosest(
+      this.width,
+      this.height,
+      this.centre.x,
+      this.centre.y
+    );
   }
   collidesWith(object: RealObject) {
     // check if the object is within the bounds of this object
@@ -144,19 +139,28 @@ export class AbstractObject {
     return steer;
   }
 
-  update(deltaTime: number) {
+  applyForces() {
     this.acceleration.mult(0);
-    let nearest = this.getNearest(this.getObjectsToMoveTowards());
-    while (nearest !== null && this.collidesWith(nearest)) {
-      this.stage.replaceObject(nearest, this.objectType);
-      nearest = this.getNearest(this.getObjectsToMoveTowards());
+    let nearestPoint = this.getNearest(this.getObjectsToMoveTowards());
+    if (nearestPoint === null) {
+      return;
     }
-    if (nearest !== null) {
-      const seekForce = this.seek(nearest.centre);
-      this.applyForce(seekForce);
+    while (this.collidesWith(nearestPoint.data)) {
+      console.log(
+        `${nearestPoint.data.objectType} collided with ${this.objectType}`
+      );
+      this.stage.replacePoint(nearestPoint, this.objectType);
+      nearestPoint = this.getNearest(this.getObjectsToMoveTowards());
+      if (nearestPoint === null) {
+        return;
+      }
     }
+    this.acceleration.add(this.seek(nearestPoint.data.centre));
+  }
 
+  update(deltaTime: number) {
     // this.updateAcceleration();
+    this.applyForces();
     this.updateVelocity(deltaTime);
     this.updatePosition(deltaTime);
     this.keepInBounds();
